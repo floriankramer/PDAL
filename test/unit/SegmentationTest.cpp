@@ -45,6 +45,7 @@ using namespace pdal;
 
 TEST(SegmentationTest, BasicClustering)
 {
+    using namespace Dimension;
     using namespace Segmentation;
 
     std::vector<PointIdList> clusters;
@@ -52,33 +53,33 @@ TEST(SegmentationTest, BasicClustering)
     PointTable table;
     PointLayoutPtr layout(table.layout());
 
-    layout->registerDim(Dimension::Id::X);
-    layout->registerDim(Dimension::Id::Y);
-    layout->registerDim(Dimension::Id::Z);
+    layout->registerDim(Id::X);
+    layout->registerDim(Id::Y);
+    layout->registerDim(Id::Z);
 
     PointViewPtr src(new PointView(table));
 
     // Single point, single cluster
-    src->setField(Dimension::Id::X, 0, 0.0);
-    src->setField(Dimension::Id::Y, 0, 0.0);
-    src->setField(Dimension::Id::Z, 0, 0.0);
+    src->setField(Id::X, 0, 0.0);
+    src->setField(Id::Y, 0, 0.0);
+    src->setField(Id::Z, 0, 0.0);
     clusters = extractClusters(*src, 1, 10, 1.0);
     EXPECT_EQ(1u, clusters.size());
     EXPECT_EQ(1u, clusters[0].size());
 
     // Two separate clusters, both with single point
-    src->setField(Dimension::Id::X, 1, 10.0);
-    src->setField(Dimension::Id::Y, 1, 10.0);
-    src->setField(Dimension::Id::Z, 1, 10.0);
+    src->setField(Id::X, 1, 10.0);
+    src->setField(Id::Y, 1, 10.0);
+    src->setField(Id::Z, 1, 10.0);
     clusters = extractClusters(*src, 1, 10, 1.0);
     EXPECT_EQ(2u, clusters.size());
     EXPECT_EQ(1u, clusters[0].size());
     EXPECT_EQ(1u, clusters[1].size());
 
     // Still two clusters, one with two points
-    src->setField(Dimension::Id::X, 2, 0.5);
-    src->setField(Dimension::Id::Y, 2, 0.5);
-    src->setField(Dimension::Id::Z, 2, 0.5);
+    src->setField(Id::X, 2, 0.5);
+    src->setField(Id::Y, 2, 0.5);
+    src->setField(Id::Z, 2, 0.5);
     clusters = extractClusters(*src, 1, 10, 1.0);
     EXPECT_EQ(2u, clusters.size());
     EXPECT_EQ(2u, clusters[0].size());
@@ -97,24 +98,25 @@ TEST(SegmentationTest, BasicClustering)
 
 TEST(SegmentationTest, SegmentReturns)
 {
+    using namespace Dimension;
     using namespace Segmentation;
 
     PointTable table;
     PointLayoutPtr layout(table.layout());
 
-    layout->registerDim(Dimension::Id::X);
-    layout->registerDim(Dimension::Id::Y);
-    layout->registerDim(Dimension::Id::Z);
-    layout->registerDim(Dimension::Id::NumberOfReturns);
-    layout->registerDim(Dimension::Id::ReturnNumber);
+    layout->registerDim(Id::X);
+    layout->registerDim(Id::Y);
+    layout->registerDim(Id::Z);
+    layout->registerDim(Id::NumberOfReturns);
+    layout->registerDim(Id::ReturnNumber);
 
     PointViewPtr src(new PointView(table));
 
-    src->setField(Dimension::Id::X, 0, 10.0);
-    src->setField(Dimension::Id::Y, 0, 10.0);
-    src->setField(Dimension::Id::Z, 0, 10.0);
-    src->setField(Dimension::Id::NumberOfReturns, 0, 1);
-    src->setField(Dimension::Id::ReturnNumber, 0, 1);
+    src->setField(Id::X, 0, 10.0);
+    src->setField(Id::Y, 0, 10.0);
+    src->setField(Id::Z, 0, 10.0);
+    src->setField(Id::NumberOfReturns, 0, 1);
+    src->setField(Id::ReturnNumber, 0, 1);
 
     PointViewPtr first, second;
 
@@ -134,11 +136,11 @@ TEST(SegmentationTest, SegmentReturns)
     EXPECT_EQ(1u, first->size());
     EXPECT_EQ(0u, second->size());
 
-    src->setField(Dimension::Id::X, 1, 10.0);
-    src->setField(Dimension::Id::Y, 1, 10.0);
-    src->setField(Dimension::Id::Z, 1, 10.0);
-    src->setField(Dimension::Id::NumberOfReturns, 1, 2);
-    src->setField(Dimension::Id::ReturnNumber, 1, 1);
+    src->setField(Id::X, 1, 10.0);
+    src->setField(Id::Y, 1, 10.0);
+    src->setField(Id::Z, 1, 10.0);
+    src->setField(Id::NumberOfReturns, 1, 2);
+    src->setField(Id::ReturnNumber, 1, 1);
 
     returns = {"last", "only"};
     first = src->makeNew();
@@ -148,11 +150,11 @@ TEST(SegmentationTest, SegmentReturns)
     EXPECT_EQ(1u, first->size());
     EXPECT_EQ(1u, second->size());
 
-    src->setField(Dimension::Id::X, 2, 10.0);
-    src->setField(Dimension::Id::Y, 2, 10.0);
-    src->setField(Dimension::Id::Z, 2, 10.0);
-    src->setField(Dimension::Id::NumberOfReturns, 2, 0);
-    src->setField(Dimension::Id::ReturnNumber, 2, 0);
+    src->setField(Id::X, 2, 10.0);
+    src->setField(Id::Y, 2, 10.0);
+    src->setField(Id::Z, 2, 10.0);
+    src->setField(Id::NumberOfReturns, 2, 0);
+    src->setField(Id::ReturnNumber, 2, 0);
 
     returns = {"last", "only"};
     first = src->makeNew();
@@ -162,11 +164,11 @@ TEST(SegmentationTest, SegmentReturns)
     EXPECT_EQ(1u, first->size());
     EXPECT_EQ(2u, second->size());
 
-    src->setField(Dimension::Id::X, 3, 10.0);
-    src->setField(Dimension::Id::Y, 3, 10.0);
-    src->setField(Dimension::Id::Z, 3, 10.0);
-    src->setField(Dimension::Id::NumberOfReturns, 3, 3);
-    src->setField(Dimension::Id::ReturnNumber, 3, 2);
+    src->setField(Id::X, 3, 10.0);
+    src->setField(Id::Y, 3, 10.0);
+    src->setField(Id::Z, 3, 10.0);
+    src->setField(Id::NumberOfReturns, 3, 3);
+    src->setField(Id::ReturnNumber, 3, 2);
 
     returns = {"intermediate", "last", "only"};
     first = src->makeNew();
@@ -183,4 +185,65 @@ TEST(SegmentationTest, SegmentReturns)
     EXPECT_EQ(4u, src->size());
     EXPECT_EQ(3u, first->size());
     EXPECT_EQ(1u, second->size());
+}
+
+TEST(SegmentationTest, IgnoreBits)
+{
+    using namespace Dimension;
+    using namespace Segmentation;
+
+    PointTable table;
+    PointLayoutPtr layout(table.layout());
+
+    layout->registerDim(Id::X);
+    layout->registerDim(Id::Y);
+    layout->registerDim(Id::Z);
+    layout->registerDim(Id::Classification);
+
+    PointViewPtr src(new PointView(table));
+
+    src->setField(Id::X, 0, 10.0);
+    src->setField(Id::Y, 0, 10.0);
+    src->setField(Id::Z, 0, 10.0);
+    src->setField(Id::Classification, 0, ClassLabel::CreatedNeverClassified);
+
+    src->setField(Id::X, 1, 5.0);
+    src->setField(Id::Y, 1, 6.0);
+    src->setField(Id::Z, 1, 7.0);
+    src->setField(Id::Classification, 1, ClassLabel::Ground | ClassLabel::Synthetic);
+
+    PointViewPtr keep, ignore;
+
+    keep = src->makeNew();
+    ignore = src->makeNew();
+    ignoreClassificationBits(src, keep, ignore, ClassLabel::Synthetic);
+    EXPECT_EQ(2u, src->size());
+    EXPECT_EQ(1u, keep->size());
+    EXPECT_EQ(1u, ignore->size());
+
+    src->setField(Id::X, 2, 2.0);
+    src->setField(Id::Y, 2, 3.0);
+    src->setField(Id::Z, 2, 5.0);
+    src->setField(Id::Classification, 2, ClassLabel::Unclassified | ClassLabel::Withheld);
+
+    keep = src->makeNew();
+    ignore = src->makeNew();
+    ignoreClassificationBits(src, keep, ignore, ClassLabel::Synthetic);
+    EXPECT_EQ(3u, src->size());
+    EXPECT_EQ(2u, keep->size());
+    EXPECT_EQ(1u, ignore->size());
+
+    keep = src->makeNew();
+    ignore = src->makeNew();
+    ignoreClassificationBits(src, keep, ignore, ClassLabel::Synthetic | ClassLabel::Withheld);
+    EXPECT_EQ(3u, src->size());
+    EXPECT_EQ(1u, keep->size());
+    EXPECT_EQ(2u, ignore->size());
+
+    keep = src->makeNew();
+    ignore = src->makeNew();
+    ignoreClassificationBits(src, keep, ignore, ClassLabel::Withheld);
+    EXPECT_EQ(3u, src->size());
+    EXPECT_EQ(2u, keep->size());
+    EXPECT_EQ(1u, ignore->size());
 }

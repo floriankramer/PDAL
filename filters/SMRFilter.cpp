@@ -91,6 +91,8 @@ struct SMRArgs
     std::vector<DimRange> m_ignored;
     StringList m_returns;
     bool m_allowSynthetic;
+    bool m_allowKeypoint;
+    bool m_allowWithheld;
 };
 
 SMRFilter::SMRFilter() : m_args(new SMRArgs) {}
@@ -115,6 +117,10 @@ void SMRFilter::addArgs(ProgramArgs& args)
     args.add("returns", "Include last returns?", m_args->m_returns,
              {"last", "only"});
     args.add("synthetic", "Allow synthetic returns?", m_args->m_allowSynthetic,
+             true);
+    args.add("keypoint", "Allow keypoint returns?", m_args->m_allowKeypoint,
+             true);
+    args.add("withheld", "Allow withheld returns?", m_args->m_allowWithheld,
              true);
 }
 
@@ -184,10 +190,18 @@ PointViewSet SMRFilter::run(PointViewPtr view)
 
     PointViewPtr syntheticView = keptView->makeNew();
     PointViewPtr realView = keptView->makeNew();
-    if (m_args->m_allowSynthetic)
+    uint8_t c(0u);
+    if (!m_args->m_allowSynthetic)
+        c = c | ClassLabel::Synthetic;
+    if (!m_args->m_allowKeypoint)
+        c = c | ClassLabel::Keypoint;
+    if (!m_args->m_allowWithheld)
+        c = c | ClassLabel::Withheld;
+    if (c == 0u)
         realView->append(*keptView);
     else
-        Segmentation::ignoreSynthetic(keptView, realView, syntheticView);
+        Segmentation::ignoreClassificationBits(keptView, realView,
+                                               syntheticView, c);
 
     // Check for 0's in ReturnNumber and NumberOfReturns
     bool nrOneZero(false);

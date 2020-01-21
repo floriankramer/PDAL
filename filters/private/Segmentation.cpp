@@ -141,14 +141,15 @@ void ignoreDimRanges(std::vector<DimRange>& ranges, PointViewPtr input,
     }
 }
 
-void ignoreSynthetic(PointViewPtr input, PointViewPtr keep, PointViewPtr ignore)
+void ignoreClassificationBits(PointViewPtr input, PointViewPtr keep,
+                              PointViewPtr ignore, uint8_t bits)
 {
     using namespace Dimension;
 
     for (PointId i = 0; i < input->size(); ++i)
     {
         uint8_t c = input->getFieldAs<uint8_t>(Id::Classification, i);
-        if (c & ClassLabel::Synthetic)
+        if (c & bits)
             ignore->appendPoint(*input, i);
         else
             keep->appendPoint(*input, i);

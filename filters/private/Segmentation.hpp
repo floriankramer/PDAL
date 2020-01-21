@@ -73,8 +73,8 @@ PDAL_DLL void ignoreDimRange(DimRange dr, PointViewPtr input, PointViewPtr keep,
 PDAL_DLL void ignoreDimRanges(std::vector<DimRange>& ranges, PointViewPtr input,
                               PointViewPtr keep, PointViewPtr ignore);
 
-PDAL_DLL void ignoreSynthetic(PointViewPtr input, PointViewPtr keep,
-                              PointViewPtr ignore);
+PDAL_DLL void ignoreClassificationBits(PointViewPtr input, PointViewPtr keep,
+                                       PointViewPtr ignore, uint8_t bits);
 
 PDAL_DLL void segmentLastReturns(PointViewPtr input, PointViewPtr last,
                                  PointViewPtr other);
